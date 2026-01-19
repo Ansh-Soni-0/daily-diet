@@ -147,12 +147,68 @@
             box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
         }
 
+        /* -----------------------------------
+           🚀 MOBILE RESPONSIVE STYLING
+        ----------------------------------- */
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .summary-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            table thead {
+                display: none;
+            }
+            table, tbody, tr, td {
+                display: block;
+                width: 100%;
+            }
+            tbody tr {
+                margin-bottom: 12px;
+                border-radius: 10px;
+                padding: 10px;
+                background: rgba(45, 45, 60, 0.8);
+            }
+            td {
+                border-bottom: none;
+                padding: 8px 5px;
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.95em;
+            }
+            td:first-child {
+                justify-content: flex-start;
+            }
+            td:before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: #4ecca3;
+                margin-right: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🥗 Daily Nutrition Tracker</h1>
-        
+
         <div class="summary">
             <h2>Nutrition Summary</h2>
             <div class="summary-stats">
@@ -211,11 +267,11 @@
                 if (isChecked) row.classList.add('checked');
 
                 row.innerHTML = `
-                    <td><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheck(${index})"></td>
-                    <td>${item.food}</td>
-                    <td>${item.qty}</td>
-                    <td>${item.cal}</td>
-                    <td>${item.prot}</td>
+                    <td data-label="Checked"><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheck(${index})"></td>
+                    <td data-label="Food">${item.food}</td>
+                    <td data-label="Quantity">${item.qty}</td>
+                    <td data-label="Calories">${item.cal}</td>
+                    <td data-label="Protein">${item.prot}</td>
                 `;
 
                 tbody.appendChild(row);
