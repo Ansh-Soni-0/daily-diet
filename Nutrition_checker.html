@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Nutrition Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(30, 30, 46, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4ecca3;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(78, 204, 163, 0.3);
+        }
+
+        .summary {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(78, 204, 163, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(78, 204, 163, 0.3);
+        }
+
+        .summary h2 {
+            color: #4ecca3;
+            margin-bottom: 10px;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            font-size: 1.2em;
+        }
+
+        .stat span {
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #4ecca3 0%, #3ba87f 100%);
+            color: #1a1a2e;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        th:first-child {
+            width: 50px;
+            text-align: center;
+        }
+
+        tbody tr {
+            background: rgba(45, 45, 60, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(78, 204, 163, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(78, 204, 163, 0.2);
+        }
+
+        tbody tr.checked {
+            background: rgba(78, 204, 163, 0.2);
+            opacity: 0.7;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(78, 204, 163, 0.1);
+        }
+
+        td:first-child {
+            text-align: center;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4ecca3;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #e94560 0%, #c7374f 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥗 Daily Nutrition Tracker</h1>
+        
+        <div class="summary">
+            <h2>Nutrition Summary</h2>
+            <div class="summary-stats">
+                <div class="stat">Total Calories: <span id="totalCal">5110</span> kcal</div>
+                <div class="stat">Total Protein: <span id="totalProt">172.5</span> g</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>✓</th>
+                    <th>Food Item</th>
+                    <th>Quantity</th>
+                    <th>Calories (kcal)</th>
+                    <th>Protein (g)</th>
+                </tr>
+            </thead>
+            <tbody id="nutritionTable"></tbody>
+        </table>
+
+        <div class="button-container">
+            <button onclick="resetAll()">🔄 Reset All Checks</button>
+        </div>
+    </div>
+
+    <script>
+        const nutritionData = [
+            { food: "Milk (whole)", qty: "2 glasses (≈500 ml)", cal: 310, prot: 15 },
+            { food: "Roasted chana powder (sattu)", qty: "10 tbsp (≈100g)", cal: 360, prot: 20 },
+            { food: "Peanut butter", qty: "5 tbsp (≈80g)", cal: 470, prot: 20 },
+            { food: "Roti", qty: "15 pieces", cal: 1500, prot: 45 },
+            { food: "Aloo sabji", qty: "1 serving (≈300g)", cal: 360, prot: 6 },
+            { food: "Banana", qty: "4 medium", cal: 420, prot: 4 },
+            { food: "Aloo paratha", qty: "2 pieces", cal: 800, prot: 16 },
+            { food: "Sprouts", qty: "50g", cal: 80, prot: 8 },
+            { food: "Soya chunks", qty: "20 pcs (≈50g dry)", cal: 180, prot: 36 },
+            { food: "Rice (cooked)", qty: "100g", cal: 130, prot: 2.5 },
+            { food: "Ghee", qty: "4 tbsp (≈56g)", cal: 500, prot: 0 }
+        ];
+
+        let checkedItems = JSON.parse(localStorage.getItem("checkedItems")) || {};
+
+        function saveToLocalStorage() {
+            localStorage.setItem("checkedItems", JSON.stringify(checkedItems));
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('nutritionTable');
+            tbody.innerHTML = '';
+
+            nutritionData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const isChecked = checkedItems[index] || false;
+
+                if (isChecked) row.classList.add('checked');
+
+                row.innerHTML = `
+                    <td><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheck(${index})"></td>
+                    <td>${item.food}</td>
+                    <td>${item.qty}</td>
+                    <td>${item.cal}</td>
+                    <td>${item.prot}</td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function toggleCheck(index) {
+            checkedItems[index] = !checkedItems[index];
+            saveToLocalStorage();
+            renderTable();
+        }
+
+        function resetAll() {
+            checkedItems = {};
+            saveToLocalStorage();
+            renderTable();
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
